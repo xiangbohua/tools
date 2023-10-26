@@ -25,7 +25,7 @@ if [ x$path != x ]
 then
     echo "处理目录或文件为：$path"
 else
-    path=$(dirname $0)
+    path=$(realpath `pwd`)
     echo "未指定目录，默认当前目录:$path"
 fi
 
