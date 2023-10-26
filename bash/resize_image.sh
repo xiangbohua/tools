@@ -3,7 +3,7 @@
 width_in_pix=$1
 
 path=$2
-
+echo $path
 #默认宽度1500像素
 default_width_in_pix=1500
 
@@ -21,13 +21,14 @@ fi
 subPath="width_in_pix_$width_in_pix"
 
 
-if [ x$path != x ]
+if [ x'$path' != x ]
 then
     echo "处理目录或文件为：$path"
 else
     path=$(realpath `pwd`)
     echo "未指定目录，默认当前目录:$path"
 fi
+
 
 
 if [ -f "$path" ]; then
@@ -57,34 +58,35 @@ if [ -f "$path" ]; then
 else
 	echo "文件不存在，尝试按文件夹处理"
     if [ -d "$path" ]; then
-		cd $path
+		cd "$path"
 
 		#创建子文件夹
 		targetPath="$path""/""$subPath"
 
-		if [ ! -d $targetPath  ];then
-		 	mkdir $targetPath
+		if [ ! -d "$targetPath"  ];then
+		 	mkdir "$targetPath"
 		fi
 
-		for file in `ls $path` #注意此处这是两个反引号，表示运行系统命令
+		for file in `ls "$path"` #注意此处这是两个反引号，表示运行系统命令
 		do
-			if [ -f $path"/"$file ] #注意此处之间一定要加上空格，否则会报错
+			if [ -f "$path""/""$file" ] #注意此处之间一定要加上空格，否则会报错
 			then
 				subfix=${file##*.}
 
+				
 				if [[ ${image_type[@]/${subfix}/} != ${image_type[@]} ]] 
 			    then
 
-					theShortFileName=$(basename $file)
+					theShortFileName=$(basename "$file")
 
 					echo "处理中：$theShortFileName"
 
-			    	targetFileName=$path"/"$subPath"/"$(basename $file)
+			    	targetFileName="$path"/"$subPath"/"$(basename $file)"
 			    	
 			    	#如果是单个文件，则复制文件后在当前目录中处理，结果保存在当前目录
-			    	cp $path"/"$file $targetFileName
+			    	cp "$path"/"$file" "$targetFileName"
 
-			    	sips -Z $width_in_pix $targetFileName > /dev/null
+			    	sips -Z $width_in_pix "$targetFileName" > /dev/null
 
 			    	echo "已处理，输出文件为$targetFileName"
 			    else
